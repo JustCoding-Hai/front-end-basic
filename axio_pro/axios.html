@@ -1,0 +1,62 @@
+<div id="app">
+    <button @click="getTeacherList2()">访问</button>
+
+    <table>
+        <tr v-for="item in teacherList">
+            <td>{{item.id}}</td>
+            <td>{{item.name}}</td>
+        </tr>
+    </table>
+</div>
+
+<script src="vue.min.js"></script>
+<script src="axios.min.js"></script>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            teacherList: []
+        },
+        methods: {
+
+            //初始化axios设置，返回一个函数引用
+            initRequest(){
+                return axios.create({
+                    baseURL:'http://localhost:8110',
+                    timeout:5000
+                })
+            },
+
+            //api访问模块
+            teacherListApi(){
+                let request=this.initRequest()
+                return request({
+                    url:'/admin/edu/teacher/list',
+                    method: 'get'
+                })
+            },
+
+            getTeacherList2(){
+                this.teacherListApi().then(response=>{
+                    console.log(response)
+                    var result=response.data
+                    this.teacherList=result.data
+                }).catch(error=>{
+                    console.log(error)
+                })
+            },
+
+            
+            getTeacherList(){
+                axios.get('http://localhost:8110/admin/edu/teacher/list').then(response => {
+                    console.log(response)
+                    this.teacherList = response.data.data
+                }).catch(error=>{
+                	//失败
+                    console.log(error)
+                })
+            }
+        }
+    })
+</script>
